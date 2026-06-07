@@ -47,28 +47,69 @@
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
         
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f0f11;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 9999px;
+            border: 2px solid #0f0f11;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             scroll-behavior: smooth;
-            background-color: #111111;
+            background-color: #0b0b0d;
             color: #E5E5E5;
+            position: relative;
+            overflow-x: hidden;
         }
         
+        h1, h2, h3, .font-outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Ambient Glow Blob */
+        .ambient-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.07) 0%, rgba(59, 130, 246, 0.03) 50%, transparent 100%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+        }
+
         .nav-link {
             position: relative;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            transition: color 0.3s ease;
         }
         
         .nav-link::after {
             content: '';
             position: absolute;
             width: 0;
-            height: 1px;
-            bottom: -2px;
+            height: 2px;
+            bottom: -4px;
             left: 0;
-            background-color: #E5E5E5;
+            background: linear-gradient(90deg, #a78bfa, #60a5fa);
             transition: width 0.3s ease;
+            border-radius: 2px;
         }
         
         .nav-link:hover::after {
@@ -76,7 +117,14 @@
         }
         
         .gradient-text {
-            background: linear-gradient(90deg, #E5E5E5, #A1A1A1);
+            background: linear-gradient(135deg, #ffffff 30%, #a2a2ab 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .accent-gradient-text {
+            background: linear-gradient(135deg, #c084fc 0%, #6366f1 50%, #3b82f6 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -87,9 +135,11 @@
             display: grid;
             grid-template-columns: 1fr;
             gap: 4rem;
-            min-height: 100vh;
+            min-height: 60vh;
             align-items: center;
-            padding-top: 5rem;
+            padding-top: 2rem;
+            position: relative;
+            z-index: 10;
         }
         
         @media (min-width: 1024px) {
@@ -99,42 +149,45 @@
         }
         
         .story-heading {
-            font-size: 2rem;
+            font-size: 2.25rem;
             line-height: 1.3;
-            font-weight: 600;
-            margin-bottom: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
         }
         
         .story-text {
             font-size: 1.125rem;
-            line-height: 1.75;
-            color: #A1A1A1;
+            line-height: 1.8;
+            color: #a1a1aa;
             margin-bottom: 1.5rem;
         }
         
         .section-divider {
             height: 1px;
-            background: linear-gradient(90deg, transparent, #333333, transparent);
+            background: linear-gradient(90deg, transparent, #27272a, transparent);
             margin: 3rem 0;
             max-width: 100%;
         }
         
-        /* Service Cards */
+        /* Service Cards with Glowing Border */
         .service-card {
-            background: linear-gradient(145deg, #1E1E1E, #2D2D2D);
-            border-radius: 16px;
+            background: rgba(18, 18, 24, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
             padding: 2.5rem;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            border: 1px solid #2D2D2D;
+            border: 1px solid rgba(255, 255, 255, 0.03);
             position: relative;
             overflow: hidden;
         }
         
         .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            border-color: #E5E5E5;
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.08);
+            border-color: rgba(167, 139, 250, 0.2);
         }
         
         .service-card::before {
@@ -142,10 +195,10 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 4px;
+            width: 3px;
             height: 0;
-            background: linear-gradient(to bottom, #E5E5E5, #A1A1A1);
-            transition: height 0.4s ease;
+            background: linear-gradient(to bottom, #c084fc, #6366f1, #3b82f6);
+            transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
         .service-card:hover::before {
@@ -158,13 +211,134 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 14px;
+            border-radius: 16px;
             margin-bottom: 1.5rem;
             font-size: 1.75rem;
-            background: linear-gradient(145deg, #2D2D2D, #1E1E1E);
+            background: rgba(39, 39, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.08) rotate(3deg);
         }
         
+        /* Featured Work Cards */
+        .work-card {
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            background: rgba(18, 18, 24, 0.5);
+            backdrop-filter: blur(10px);
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .work-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(167, 139, 250, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .work-image-wrapper {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 16/10;
+        }
+
+        .work-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .work-card:hover img {
+            transform: scale(1.04);
+        }
+
+        .work-tag {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(11, 11, 13, 0.85);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #d4d4d8;
+            z-index: 10;
+        }
+
+        /* FAQ Accordion Styling */
+        .faq-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: border-color 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: rgba(167, 139, 250, 0.2);
+        }
+
+        .faq-button {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #f4f4f5;
+            text-align: left;
+            transition: color 0.3s ease;
+        }
+
+        .faq-button:hover {
+            color: #c084fc;
+        }
+
+        .faq-icon {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            font-size: 0.95rem;
+            color: #71717a;
+        }
+
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), padding 0.3s ease;
+            color: #a1a1aa;
+            line-height: 1.7;
+        }
+
+        .faq-item.active .faq-content {
+            padding-bottom: 1.5rem;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+            color: #c084fc;
+        }
+
+        /* Estimate Tool styling */
+        .estimator-card {
+            background: linear-gradient(145deg, rgba(18, 18, 24, 0.5), rgba(24, 24, 32, 0.3));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .option-checkbox:checked + label {
+            background: rgba(124, 58, 237, 0.1);
+            border-color: #a78bfa;
+            color: #ffffff;
+        }
+
         /* Testimonial Slider */
         .testimonial-slider {
             position: relative;
@@ -174,16 +348,23 @@
         
         .testimonial-slide {
             display: none;
-            animation: fade 1s ease-in-out;
+            opacity: 0;
         }
         
         .testimonial-slide.active {
             display: block;
+            animation: slideFadeIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         
-        @keyframes fade {
-            from {opacity: 0;}
-            to {opacity: 1;}
+        @keyframes slideFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .slider-nav {
@@ -193,17 +374,19 @@
         }
         
         .slider-dot {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background: #333333;
-            margin: 0 5px;
+            background: #27272a;
+            margin: 0 6px;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
         }
         
         .slider-dot.active {
-            background: #E5E5E5;
+            background: #c084fc;
+            transform: scale(1.25);
+            box-shadow: 0 0 8px rgba(192, 132, 252, 0.5);
         }
         
         /* Contact Buttons */
@@ -224,70 +407,207 @@
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
         .contact-btn:hover {
-            transform: translateY(-5px) scale(1.1);
+            transform: translateY(-5px) scale(1.05);
         }
         
         .whatsapp-btn {
             background: #25D366;
             color: white;
+            border: 1px solid rgba(37, 211, 102, 0.2);
         }
         
         .email-btn {
-            background: #E5E5E5;
-            color: #111111;
+            background: #f4f4f5;
+            color: #0b0b0d;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         /* Mobile Menu */
         .mobile-menu {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease-out;
+            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
         .mobile-menu.open {
             max-height: 500px;
-            transition: max-height 0.3s ease-in;
+        }
+        
+        /* Scroll Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #c084fc, #6366f1, #3b82f6);
+            width: 0%;
+            z-index: 100;
+            transition: width 0.1s ease-out;
+        }
+
+        /* Floating Background Glow */
+        .ambient-glow-static {
+            position: absolute;
+            top: 25%;
+            left: 65%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.04) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatGlow 18s ease-in-out infinite;
+        }
+
+        @keyframes floatGlow {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-30px, 40px) scale(1.1); }
+        }
+
+        /* Reveal Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-40px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-left.revealed {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(40px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-right.revealed {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.94);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-scale.revealed {
+            opacity: 1;
+            transform: scale(1);
         }
         
         /* Improved spacing */
         .section-spacing {
-            padding: 6rem 0;
+            padding: 7rem 0;
         }
         
         @media (max-width: 768px) {
             .section-spacing {
-                padding: 4rem 0;
+                padding: 4.5rem 0;
             }
             
             .intro-container {
-                padding-top: 7rem;
-                gap: 2rem;
+                padding-top: 2rem;
+                gap: 2.5rem;
             }
             
             .story-heading {
-                font-size: 1.75rem;
+                font-size: 1.85rem;
+            }
+        }
+
+        /* Page Wrapper for Framed Layout */
+        #page-wrapper {
+            position: relative;
+            z-index: 10;
+            padding: 6rem 1rem 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            #page-wrapper {
+                padding: 8rem 2rem 2.5rem 2rem;
+                gap: 2.5rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            #page-wrapper {
+                padding: 9rem 3rem 3.5rem 3rem;
+                gap: 3.5rem;
+            }
+        }
+
+        /* Section Card Styles */
+        .section-card {
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        @media (min-width: 768px) {
+            .section-card {
+                border-radius: 32px;
+            }
+        }
+        
+        /* Smooth scrolling adjustment for floating header */
+        section, #story, #developed-sites {
+            scroll-margin-top: 6.5rem;
+        }
+        @media (min-width: 768px) {
+            section, #story, #developed-sites {
+                scroll-margin-top: 8.5rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            section, #story, #developed-sites {
+                scroll-margin-top: 9.5rem;
             }
         }
     </style>
 </head>
 <body class="bg-dark">
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scroll-progress"></div>
+
+    <!-- Ambient Glow Blobs -->
+    <div class="ambient-glow" id="ambient-glow"></div>
+    <div class="ambient-glow-static"></div>
+
     <!-- Navigation -->
-    <nav class="fixed w-full bg-dark bg-opacity-90 z-50 border-b border-steel">
-        <div class="container mx-auto px-6 py-4">
+    <nav class="fixed top-4 left-4 right-4 md:top-6 md:left-8 md:right-8 lg:top-8 lg:left-12 lg:right-12 bg-dark bg-opacity-75 backdrop-blur-md z-50 border border-steel rounded-full transition-all duration-300">
+        <div class="px-6 py-3 md:px-8 md:py-4">
             <div class="flex items-center justify-between">
-                <a href="/" class="text-2xl font-bold" aria-label="Craft of URL Home">
-                    <span class="text-silver">craft</span><span class="text-gray-500">of</span><span class="text-silver">url</span>
+                <a href="/" class="text-2xl font-bold font-outfit" aria-label="Craft of URL Home">
+                    <span class="text-silver">craft</span><span class="text-gray-500 font-normal">of</span><span class="text-silver">url</span>
                 </a>
                 
                 <div class="hidden md:flex space-x-8">
                     <a href="#story" class="nav-link text-silver hover:text-white">Our Story</a>
                     <a href="#services" class="nav-link text-silver hover:text-white">Services</a>
+                    <a href="#products" class="nav-link text-silver hover:text-white">Products</a>
                     <a href="#testimonials" class="nav-link text-silver hover:text-white">Testimonials</a>
+                    <a href="#developed-sites" class="nav-link text-silver hover:text-white">Developed Sites</a>
+                    <a href="#faq" class="nav-link text-silver hover:text-white">FAQ</a>
                 </div>
                 
                 <div class="md:hidden">
@@ -302,48 +622,55 @@
                 <div class="flex flex-col space-y-4 pt-4 pb-2">
                     <a href="#story" class="nav-link text-silver hover:text-white py-2">Our Story</a>
                     <a href="#services" class="nav-link text-silver hover:text-white py-2">Services</a>
+                    <a href="#products" class="nav-link text-silver hover:text-white py-2">Products</a>
                     <a href="#testimonials" class="nav-link text-silver hover:text-white py-2">Testimonials</a>
+                    <a href="#developed-sites" class="nav-link text-silver hover:text-white py-2">Developed Sites</a>
+                    <a href="#faq" class="nav-link text-silver hover:text-white py-2">FAQ</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero + Story Side-by-Side -->
-    <div class="intro-container container mx-auto px-6">
-        <!-- Hero Section (Left) -->
-        <div class="py-12">
-            <h1 class="text-display md:text-display-md font-bold mb-8 leading-tight">
-                We <span class="gradient-text">craft</span> digital experiences that <span class="gradient-text">matter</span>
-            </h1>
-            <p class="text-lead text-gray-400 mb-10">
-                From pixels to profits, we build digital solutions that tell your story and drive results.
-            </p>
-            <a href="#services" class="bg-silver text-dark px-8 py-4 rounded-full font-bold hover:bg-white transition duration-300 inline-flex items-center text-body">
-                Explore Services <i class="fas fa-arrow-right ml-2"></i>
-            </a>
-        </div>
-        
-        <!-- Story Section (Right) -->
-        <div class="py-12" id="story">
-            <h2 class="story-heading text-silver">Our Story</h2>
-            <div class="section-divider"></div>
-            
-            <p class="story-text">
-                At Craft of URL, our journey began with a mission to blend creativity with technology — building digital experiences that not only look good but perform even better.
-            </p>
-            <p class="story-text">
-                From websites to ad campaigns, we craft every project with precision, passion, and purpose. What started as a small team of digital enthusiasts has grown into a full-service agency helping brands thrive online.
-            </p>
-            <p class="story-text">
-                We're not just developers or marketers — we're storytellers, designers, and strategists committed to turning ideas into impactful digital journeys.
-            </p>
-        </div>
-    </div>
+    <!-- Main Framed Page Wrapper -->
+    <div id="page-wrapper">
+        <!-- Hero + Story Side-by-Side -->
+        <section id="hero-story" class="section-card bg-slate/10 backdrop-blur-sm relative z-10">
+            <div class="intro-container container mx-auto px-6">
+                <!-- Hero Section (Left) -->
+                <div class="py-12 reveal-left" style="transition-delay: 100ms;">
+                    <h1 class="text-display md:text-display-md font-bold mb-8 leading-tight">
+                        We <span class="accent-gradient-text">craft</span> digital experiences that <span class="accent-gradient-text">matter</span>
+                    </h1>
+                    <p class="text-lead text-gray-400 mb-10">
+                        From pixels to profits, we build digital solutions that tell your story and drive results.
+                    </p>
+                    <a href="#services" class="bg-silver text-dark px-8 py-4 rounded-full font-bold hover:bg-white hover:shadow-lg hover:shadow-purple-500/25 transition duration-300 inline-flex items-center text-body">
+                        Explore Services <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                    </a>
+                </div>
+                
+                <!-- Story Section (Right) -->
+                <div class="py-12 reveal-right" id="story" style="transition-delay: 300ms;">
+                    <h2 class="story-heading text-silver">Our Story</h2>
+                    <div class="section-divider"></div>
+                    
+                    <p class="story-text">
+                        At Craft of URL, our journey began with a mission to blend creativity with technology — building digital experiences that not only look good but perform even better.
+                    </p>
+                    <p class="story-text">
+                        From websites to ad campaigns, we craft every project with precision, passion, and purpose. What started as a small team of digital enthusiasts has grown into a full-service agency helping brands thrive online.
+                    </p>
+                    <p class="story-text">
+                        We're not just developers or marketers — we're storytellers, designers, and strategists committed to turning ideas into impactful digital journeys.
+                    </p>
+                </div>
+            </div>
+        </section>
 
-    <!-- Services Section -->
-    <section id="services" class="section-spacing">
+        <!-- Services Section -->
+        <section id="services" class="section-spacing section-card bg-dark/50 backdrop-blur-sm relative z-10">
         <div class="container mx-auto px-6">
-            <div class="max-w-4xl mx-auto text-center mb-12">
+            <div class="max-w-4xl mx-auto text-center mb-12 reveal">
                 <h2 class="text-heading md:text-heading-md font-bold mb-6">Our Services</h2>
                 <p class="text-lead text-gray-400">Comprehensive digital solutions tailored to elevate your brand</p>
                 <div class="section-divider"></div>
@@ -351,7 +678,7 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Design & Branding -->
-                <div class="service-card">
+                <div class="service-card reveal-left" style="transition-delay: 50ms;">
                     <div class="service-icon text-purple-400">
                         <i class="fas fa-palette"></i>
                     </div>
@@ -360,7 +687,7 @@
                 </div>
                 
                 <!-- Digital Marketing -->
-                <div class="service-card">
+                <div class="service-card reveal-scale" style="transition-delay: 100ms;">
                     <div class="service-icon text-blue-400">
                         <i class="fas fa-bullhorn"></i>
                     </div>
@@ -369,7 +696,7 @@
                 </div>
                 
                 <!-- Web Development -->
-                <div class="service-card">
+                <div class="service-card reveal-right" style="transition-delay: 150ms;">
                     <div class="service-icon text-green-400">
                         <i class="fas fa-code"></i>
                     </div>
@@ -378,7 +705,7 @@
                 </div>
                 
                 <!-- Maintenance -->
-                <div class="service-card">
+                <div class="service-card reveal-left" style="transition-delay: 200ms;">
                     <div class="service-icon text-yellow-400">
                         <i class="fas fa-tools"></i>
                     </div>
@@ -387,7 +714,7 @@
                 </div>
                 
                 <!-- Mobile Apps -->
-                <div class="service-card">
+                <div class="service-card reveal-scale" style="transition-delay: 250ms;">
                     <div class="service-icon text-red-400">
                         <i class="fas fa-mobile-alt"></i>
                     </div>
@@ -396,7 +723,7 @@
                 </div>
                 
                 <!-- Strategy -->
-                <div class="service-card">
+                <div class="service-card reveal-right" style="transition-delay: 300ms;">
                     <div class="service-icon text-pink-400">
                         <i class="fas fa-chess"></i>
                     </div>
@@ -407,102 +734,272 @@
         </div>
     </section>
 
-    <!-- Testimonial Section -->
-    <section id="testimonials" class="section-spacing bg-slate">
+        <!-- Products Section -->
+        <section id="products" class="section-spacing section-card bg-slate/40 relative z-10">
         <div class="container mx-auto px-6">
-            <div class="max-w-4xl mx-auto text-center mb-12">
-                <h2 class="text-heading md:text-heading-md font-bold mb-6">What Our Clients Say</h2>
-                <div class="section-divider my-8"></div>
+            <div class="max-w-4xl mx-auto text-center mb-16 reveal">
+                <h2 class="text-heading md:text-heading-md font-bold mb-6">Our Products</h2>
+                <p class="text-lead text-gray-400">Custom-engineered software systems designed to power modern enterprises</p>
+                <div class="section-divider"></div>
             </div>
             
-            <div class="testimonial-slider">
-                <!-- Testimonial 1 
-                <div class="testimonial-slide active text-center">
-                    <i class="fas fa-quote-left text-4xl text-gray-500 mb-8"></i>
-                    <p class="text-xl mb-8">
-                        "craft of url transformed our digital presence completely. Their approach blends creativity with technical excellence - rare to find both in one team."
-                    </p>
-                    <div class="flex items-center justify-center">
-                        <img src="https://randomuser.me/api/portraits/women/43.jpg" alt="Sarah Johnson, CEO of TechSolutions" class="w-12 h-12 rounded-full mr-4">
-                        <div>
-                            <h4 class="font-bold">Sarah Johnson</h4>
-                            <p class="text-gray-400">CEO, TechSolutions</p>
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Product 1: Custom Web Apps -->
+                <div class="service-card reveal-left" style="transition-delay: 50ms;">
+                    <div class="service-icon text-purple-400">
+                        <i class="fas fa-laptop-code"></i>
                     </div>
+                    <h3 class="text-2xl font-bold mb-4 text-silver">Custom Web Apps</h3>
+                    <p class="text-body text-gray-400">Bespoke, high-performance web applications tailored to model your unique business processes and workflow automation goals.</p>
                 </div>
-                -->
-                
-                <!-- Testimonial 2 
-                <div class="testimonial-slide text-center">
-                    <i class="fas fa-quote-left text-4xl text-gray-500 mb-8"></i>
-                    <p class="text-xl mb-8">
-                        "The website they built increased our conversion rate by 200%. Their attention to detail and strategic thinking made all the difference."
-                    </p>
-                    <div class="flex items-center justify-center">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Michael Chen, Marketing Director at RetailCo" class="w-12 h-12 rounded-full mr-4">
-                        <div>
-                            <h4 class="font-bold">Michael Chen</h4>
-                            <p class="text-gray-400">Marketing Director, RetailCo</p>
-                        </div>
+
+                <!-- Product 2: POS & Billing -->
+                <div class="service-card reveal-scale" style="transition-delay: 100ms;">
+                    <div class="service-icon text-blue-400">
+                        <i class="fas fa-cash-register"></i>
                     </div>
+                    <h3 class="text-2xl font-bold mb-4 text-silver">POS & Billing Suite</h3>
+                    <p class="text-body text-gray-400">Point of sale, inventory purchase tracking, automated billing, and invoice generation tools designed for retails, medical hubs, and service industries.</p>
                 </div>
-                -->
-                
-                <!-- Testimonial 3 -->
-                <div class="testimonial-slide active text-center">
-                    <i class="fas fa-quote-left text-4xl text-gray-500 mb-8"></i>
-                    <p class="text-xl mb-8">
-                        "Working with craft of url was seamless from start to finish. They understood our vision and executed it perfectly, delivering ahead of schedule."
-                    </p>
-                    <div class="flex items-center justify-center">
-                        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Emily Rodriguez, Founder of StartupX" class="w-12 h-12 rounded-full mr-4">
-                        <div>
-                            <h4 class="font-bold">Jeevitha</h4>
-                            <p class="text-gray-400">Founder, Neatzy</p>
-                        </div>
+
+                <!-- Product 3: Asset & HR Payroll -->
+                <div class="service-card reveal-right" style="transition-delay: 150ms;">
+                    <div class="service-icon text-green-400">
+                        <i class="fas fa-users-cog"></i>
                     </div>
+                    <h3 class="text-2xl font-bold mb-4 text-silver">HR & Payroll Suite</h3>
+                    <p class="text-body text-gray-400">Robust asset management, employee profile directories, payroll calculation models, and internal operational tracking software.</p>
                 </div>
-                
-                <!-- Slider Navigation Dots 
-                <div class="slider-nav">
-        
-                    <div class="slider-dot active" data-slide="0"></div>
-                    <div class="slider-dot" data-slide="1"></div>
-                    <div class="slider-dot active" data-slide="2"></div>
+
+                <!-- Product 4: ERP Deployments -->
+                <div class="service-card reveal-left" style="transition-delay: 200ms;">
+                    <div class="service-icon text-yellow-400">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-silver">ERP & Accounting</h3>
+                    <p class="text-body text-gray-400">End-to-end Enterprise Resource Planning (ERP) setups and automated double-entry accounting software custom configured for scalability.</p>
                 </div>
-                -->
+
+                <!-- Product 5: Document Management System -->
+                <div class="service-card reveal-scale" style="transition-delay: 250ms;">
+                    <div class="service-icon text-red-400">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-silver">Document Management</h3>
+                    <p class="text-body text-gray-400">High-security digital file cabinets with robust metadata indexing, lightning-fast text searches, and clean sharing controls.</p>
+                </div>
+
+                <!-- Product 6: Student Information System -->
+                <div class="service-card reveal-right" style="transition-delay: 300ms;">
+                    <div class="service-icon text-pink-400">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-silver">Student Info Systems</h3>
+                    <p class="text-body text-gray-400">All-in-one information database portals managing student details, grades, automated attendance records, and school workflows.</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="py-12 border-t border-steel">
+        <!-- Testimonial Section -->
+        <section id="testimonials" class="section-spacing section-card bg-slate relative z-10">
         <div class="container mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="text-2xl font-bold mb-6 md:mb-0">
-                    <a href="/" aria-label="Craft of URL Home">
-                        <span class="text-silver">craft</span><span class="text-gray-500">of</span><span class="text-silver">url</span>
-                    </a>
+            <div class="max-w-4xl mx-auto text-center mb-12 reveal">
+                <h2 class="text-heading md:text-heading-md font-bold mb-6">What Our Clients Say</h2>
+                <div class="section-divider my-8"></div>
+            </div>
+            
+            <div class="testimonial-slider reveal">
+                <!-- Testimonial 1 -->
+                <div class="testimonial-slide active text-center">
+                    <i class="fas fa-quote-left text-4xl text-gray-600 mb-8"></i>
+                    <p class="text-xl mb-8 leading-relaxed italic text-gray-300">
+                        "We were struggling to get online bookings for our packing and moving business in Bangalore. The team at Craft of URL built us a fast, clean website that makes it simple for customers to get instant quotes. Bookings are up by 40%!"
+                    </p>
+                    <div class="flex items-center justify-center">
+                        <div class="text-center">
+                            <h4 class="font-bold text-silver">Rajesh Nair</h4>
+                            <p class="text-gray-400 text-sm">Founder, Rove Packers & Movers</p>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="flex space-x-6 mb-6 md:mb-0 justify-center w-full md:w-auto">
-                    <a href="#" class="text-gray-400 hover:text-silver transition duration-300" aria-label="Twitter">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="https://www.instagram.com/craftofurl?igsh=aW1vejV5Zm52eWE0" target="_blank" class="text-gray-400 hover:text-silver transition duration-300" aria-label="Instagram">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://wa.me/918870121655?text=Hi%20Team,%20I'm%20interested%20in%20your%20services.%20Please%20share%20more%20details.%20Thanks" target="_blank" class="text-gray-400 hover:text-silver transition duration-300" aria-label="WhatsApp">
-                        <i class="fab fa-whatsapp"></i>
-                    </a>
+                <!-- Testimonial 2 -->
+                <div class="testimonial-slide text-center">
+                    <i class="fas fa-quote-left text-4xl text-gray-600 mb-8"></i>
+                    <p class="text-xl mb-8 leading-relaxed italic text-gray-300">
+                        "Craft of URL built our online store for custom home decor. They understood exactly what we wanted—a minimalist design that highlights our ceramic vases. The site loads fast on mobile and managing orders has become a breeze."
+                    </p>
+                    <div class="flex items-center justify-center">
+                        <div class="text-center">
+                            <h4 class="font-bold text-silver">Jeevitha</h4>
+                            <p class="text-gray-400 text-sm">Founder, Neatzy E-Commerce</p>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="text-gray-400 text-sm text-center md:text-left">
-                    <span class="text-silver">craft</span><span class="text-gray-500">of</span><span class="text-silver">url</span> © 2023-2025. All rights reserved.
+                <!-- Testimonial 3 -->
+                <div class="testimonial-slide text-center">
+                    <i class="fas fa-quote-left text-4xl text-gray-600 mb-8"></i>
+                    <p class="text-xl mb-8 leading-relaxed italic text-gray-300">
+                        "Very professional and helpful team. They set up our premium business landing page and integrated customer inquiry forms seamlessly. They didn't just build a site; they guided us on how to position our brand online."
+                    </p>
+                    <div class="flex items-center justify-center">
+                        <div class="text-center">
+                            <h4 class="font-bold text-silver">Amit Sharma</h4>
+                            <p class="text-gray-400 text-sm">Owner, Richy Richea Retail</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Slider Navigation Dots -->
+                <div class="slider-nav">
+                    <div class="slider-dot active" data-slide="0"></div>
+                    <div class="slider-dot" data-slide="1"></div>
+                    <div class="slider-dot" data-slide="2"></div>
+                </div>
+            </div>
+
+            <!-- Developed Websites Sub-section -->
+            <div id="developed-sites" class="mt-24 border-t border-steel pt-16 reveal">
+                <div class="text-center mb-12">
+                    <h3 class="text-2xl font-bold mb-4 text-silver">Developed Websites</h3>
+                    <p class="text-gray-400">Live platforms built and deployed for our clients</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                    <!-- Website 1 -->
+                    <a href="https://rovepackersandmovers.com/" target="_blank" class="service-card flex flex-col justify-between p-6 hover:border-purple-500/30 transition duration-300">
+                        <div>
+                            <div class="text-purple-400 text-3xl mb-4">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <h4 class="text-xl font-bold text-silver mb-2 font-outfit">Rove Packers & Movers</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">A high-performance logistics platform engineered with booking workflows and dynamic quote generation.</p>
+                        </div>
+                        <div class="mt-6 text-purple-400 hover:text-purple-300 font-semibold inline-flex items-center text-sm">
+                            Visit Website <i class="fas fa-external-link-alt ml-2 text-xs"></i>
+                        </div>
+                    </a>
+
+                    <!-- Website 2 -->
+                    <a href="https://neatzy.github.io/neatzy/" target="_blank" class="service-card flex flex-col justify-between p-6 hover:border-purple-500/30 transition duration-300">
+                        <div>
+                            <div class="text-blue-400 text-3xl mb-4">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                            <h4 class="text-xl font-bold text-silver mb-2 font-outfit">Neatzy E-Commerce</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">A beautiful, lightweight e-commerce storefront crafted for home aesthetics and ceramic decorations.</p>
+                        </div>
+                        <div class="mt-6 text-blue-400 hover:text-blue-300 font-semibold inline-flex items-center text-sm">
+                            Visit Website <i class="fas fa-external-link-alt ml-2 text-xs"></i>
+                        </div>
+                    </a>
+
+                    <!-- Website 3 -->
+                    <a href="https://www.richyrichea.in/" target="_blank" class="service-card flex flex-col justify-between p-6 hover:border-purple-500/30 transition duration-300">
+                        <div>
+                            <div class="text-green-400 text-3xl mb-4">
+                                <i class="fas fa-gem"></i>
+                            </div>
+                            <h4 class="text-xl font-bold text-silver mb-2 font-outfit">Richy Richea</h4>
+                            <p class="text-sm text-gray-400 leading-relaxed">An elegant web portal for a premium luxury business showcasing products and client engagement flows.</p>
+                        </div>
+                        <div class="mt-6 text-green-400 hover:text-green-300 font-semibold inline-flex items-center text-sm">
+                            Visit Website <i class="fas fa-external-link-alt ml-2 text-xs"></i>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
-    </footer>
+    </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="section-spacing section-card bg-dark/50 backdrop-blur-sm relative z-10">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-heading md:text-heading-md font-bold mb-6">Frequently Asked Questions</h2>
+                <p class="text-lead text-gray-400">Everything you need to know about our craftsmanship and process</p>
+                <div class="section-divider"></div>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- FAQ Item 1 -->
+                <div class="faq-item reveal-left" style="transition-delay: 50ms;">
+                    <button class="faq-button focus:outline-none" aria-expanded="false">
+                        <span>What services do you offer?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <p>We provide full-service digital craftsmanship including high-end UI/UX design, custom web development (static sites, Shopify, WordPress), custom mobile solutions for iOS and Android, ongoing site maintenance, digital marketing strategies, and conversion rate optimization (CRO) campaigns.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="faq-item reveal-right" style="transition-delay: 100ms;">
+                    <button class="faq-button focus:outline-none" aria-expanded="false">
+                        <span>How long does it take to build a website?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <p>A typical custom landing page or simple website takes 1–3 weeks. More complex e-commerce portals or web applications generally take 4–8 weeks. We align on specific milestones and timelines before starting work, keeping you updated every step of the way.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="faq-item reveal-left" style="transition-delay: 150ms;">
+                    <button class="faq-button focus:outline-none" aria-expanded="false">
+                        <span>Do you offer support after launching?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <p>Yes, we offer monthly maintenance and support plans to keep your platform secure, updated, and fast. Support includes security patches, performance optimization, content edits, and server monitoring.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="faq-item reveal-right" style="transition-delay: 200ms;">
+                    <button class="faq-button focus:outline-none" aria-expanded="false">
+                        <span>How do we get started?</span>
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <p>You can contact us directly via WhatsApp or Email using the buttons at the bottom. We'll set up a quick discovery call to discuss your goals, draft a proposal, and begin crafting your solution!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- Footer -->
+        <footer class="py-12 section-card bg-slate/20 backdrop-blur-sm relative z-10">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                    <div class="text-2xl font-bold text-center md:text-left">
+                        <a href="/" aria-label="Craft of URL Home">
+                            <span class="text-silver">craft</span><span class="text-gray-500 font-normal">of</span><span class="text-silver">url</span>
+                        </a>
+                    </div>
+                    
+                    <div class="flex justify-center space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-silver transition duration-300" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://www.instagram.com/craftofurl?igsh=aW1vejV5Zm52eWE0" target="_blank" class="text-gray-400 hover:text-silver transition duration-300" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://wa.me/918870121655?text=Hi%20Team,%20I'm%20interested%20in%20your%20services.%20Please%20share%20more%20details.%20Thanks" target="_blank" class="text-gray-400 hover:text-silver transition duration-300" aria-label="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="text-gray-400 text-sm text-center md:text-right">
+                        <span class="text-silver">craft</span><span class="text-gray-500">of</span><span class="text-silver">url</span> © 2023-2025. All rights reserved.
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
 
     <!-- Floating Contact Buttons -->
     <div class="contact-float">
@@ -520,9 +1017,45 @@
     </div>
 
     <script>
+        // Ambient cursor glow tracking
+        const glow = document.getElementById('ambient-glow');
+        window.addEventListener('mousemove', (e) => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+
+        // Scroll Progress Bar logic
+        window.addEventListener('scroll', () => {
+            const progress = document.getElementById('scroll-progress');
+            const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+            if (totalScroll > 0) {
+                const scrolled = (window.scrollY / totalScroll) * 100;
+                progress.style.width = scrolled + '%';
+            }
+        });
+
+        // Reveal elements on scroll (Intersection Observer)
+        const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+        
+        revealElements.forEach(el => {
+            revealObserver.observe(el);
+        });
+
         // Mobile Menu Toggle
         const menuToggle = document.getElementById('menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
+        const navBar = menuToggle.closest('nav');
         
         menuToggle.addEventListener('click', function() {
             const isExpanded = this.getAttribute('aria-expanded') === 'true';
@@ -534,9 +1067,13 @@
             if (mobileMenu.classList.contains('open')) {
                 icon.classList.remove('fa-bars');
                 icon.classList.add('fa-times');
+                navBar.classList.remove('rounded-full');
+                navBar.classList.add('rounded-[24px]');
             } else {
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-bars');
+                navBar.classList.add('rounded-full');
+                navBar.classList.remove('rounded-[24px]');
             }
         });
         
@@ -547,6 +1084,8 @@
                 menuToggle.setAttribute('aria-expanded', 'false');
                 menuToggle.querySelector('i').classList.remove('fa-times');
                 menuToggle.querySelector('i').classList.add('fa-bars');
+                navBar.classList.add('rounded-full');
+                navBar.classList.remove('rounded-[24px]');
             });
         });
         
@@ -554,10 +1093,15 @@
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
                 
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
             });
         });
         
@@ -581,22 +1125,55 @@
             showSlide(nextSlide);
         }
         
-        // Set interval for auto-rotation (2.5 seconds)
-        let slideInterval = setInterval(autoRotate, 2500);
+        // Set interval for auto-rotation (5 seconds)
+        let slideInterval = setInterval(autoRotate, 5000);
         
         // Click handler for dots
         dots.forEach(dot => {
             dot.addEventListener('click', function() {
                 clearInterval(slideInterval);
                 showSlide(parseInt(this.dataset.slide));
-                slideInterval = setInterval(autoRotate, 2500);
+                slideInterval = setInterval(autoRotate, 5000);
             });
         });
         
         // Pause on hover
         const slider = document.querySelector('.testimonial-slider');
-        slider.addEventListener('mouseenter', () => clearInterval(slideInterval));
-        slider.addEventListener('mouseleave', () => slideInterval = setInterval(autoRotate, 5000));
+        if (slider) {
+            slider.addEventListener('mouseenter', () => clearInterval(slideInterval));
+            slider.addEventListener('mouseleave', () => {
+                clearInterval(slideInterval);
+                slideInterval = setInterval(autoRotate, 5000);
+            });
+        }
+
+        // FAQ Accordion toggles
+        document.querySelectorAll('.faq-button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const item = btn.parentElement;
+                const content = item.querySelector('.faq-content');
+                const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+                
+                // Close other items
+                document.querySelectorAll('.faq-item').forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                        otherItem.querySelector('.faq-button').setAttribute('aria-expanded', 'false');
+                        otherItem.querySelector('.faq-content').style.maxHeight = null;
+                    }
+                });
+                
+                // Toggle current item
+                item.classList.toggle('active');
+                btn.setAttribute('aria-expanded', !isExpanded);
+                
+                if (item.classList.contains('active')) {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                } else {
+                    content.style.maxHeight = null;
+                }
+            });
+        });
     </script>
 </body>
 </html>
